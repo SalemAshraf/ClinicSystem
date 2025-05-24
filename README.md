@@ -16,4 +16,4 @@ A clean, object-oriented PHP backend for clinic management, featuring:
 
 1. Clone the repo:  
    ```bash
-   git clone https://github.com/your-username/ClinicSystem.git
+   git clone https://github.com/SalemAshraf/ClinicSystem.git
