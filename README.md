@@ -17,3 +17,26 @@ A clean, object-oriented PHP backend for clinic management, featuring:
 1. Clone the repo:  
    ```bash
    git clone https://github.com/SalemAshraf/ClinicSystem.git
+
+
+### ⚙️ Tech Stack
+PHP 8.x with OOP and Namespaces
+
+MySQL / MariaDB
+
+Composer for autoloading
+
+Bootstrap 5 & AdminLTE for UI
+
+PHPMailer for email notifications
+
+### 🚀 Features Roadmap
+📱 RESTful API endpoints for front-end integration
+
+🔔 Email/SMS reminders for upcoming appointments
+
+📊 Advanced analytics and reporting
+
+🔒 Two-factor authentication
+
+Built with ❤️ by Salem Ashraf for ClinicSystem course project.
