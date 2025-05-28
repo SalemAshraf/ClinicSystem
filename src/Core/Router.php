@@ -1,32 +1,48 @@
 <?php
 namespace Core;
 
-class Router {
-    private $routes = [];
+class Router
+{
+    protected array $routes = [];
 
-    public function add(string $method, string $pattern, $callback) {
-        $this->routes[] = compact('method','pattern','callback');
+    /**
+     * Load a routes file into a new Router instance.
+     */
+    public static function load(string $routesFile): self
+    {
+        $router = new static;
+        require $routesFile;
+        return $router;
     }
 
-    public function get($pattern, $callback) {
-        $this->add('GET', $pattern, $callback);
-    }
-    public function post($pattern, $callback) {
-        $this->add('POST', $pattern, $callback);
+    public function get(string $uri, string $controllerAction)
+    {
+        $this->routes['GET'][$uri] = $controllerAction;
     }
 
-    public function dispatch($uri, $requestMethod) {
-        $path = parse_url($uri, PHP_URL_PATH);
-        foreach ($this->routes as $route) {
-            if ($route['method'] !== $requestMethod) continue;
-            if (preg_match("#^{$route['pattern']}$#", $path, $matches)) {
-                array_shift($matches);
-                list($class, $method) = $route['callback'];
-                $controller = new $class;
-                return call_user_func_array([$controller, $method], $matches);
-            }
+    public function post(string $uri, string $controllerAction)
+    {
+        $this->routes['POST'][$uri] = $controllerAction;
+    }
+
+    public function direct(string $uri, string $requestMethod)
+    {
+        // strip query-string, if any
+        $uri = strtok($uri, '?');
+
+        if (isset($this->routes[$requestMethod][$uri])) {
+            return $this->callAction(
+                ...explode('@', $this->routes[$requestMethod][$uri])
+            );
         }
-        http_response_code(404);
-        echo "404 Not Found";
+
+        throw new \Exception("No route defined for {$uri}");
+    }
+
+    protected function callAction(string $controller, string $action)
+    {
+        $controller = "Controllers\\{$controller}";
+        $instance   = new $controller;
+        return $instance->$action();
     }
 }

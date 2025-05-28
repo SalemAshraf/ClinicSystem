@@ -1,23 +1,62 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config/db.php';
+session_start();
 
-use Core\Router;
-use src\Controllers\ClinicController;
-use src\Controllers\DashboardController;
+require_once "../config/db.php";
+require_once "../src/Core/function.php";
+require_once "../src/Views/partials/header.php";
 
-$router = new Router();
+$page = $_GET['page'] ?? 'home';
 
-// أمثلة تعريف Routes
-$router->get('/',            [ClinicController::class, 'index']);
-$router->get('/contact',     [ClinicController::class, 'contact']);
-$router->get('/login',       [ClinicController::class, 'showLogin']);
-$router->post('/login',      [ClinicController::class, 'login']);
+// الراوتر
+switch ($page) {
 
-$router->get('/dashboard',   [DashboardController::class, 'index']);
-$router->get('/orders',      [DashboardController::class, 'orders']);
-$router->get('/orders/(\d+)',[DashboardController::class, 'orderDetail']);
+    case 'home':
+        require_once "../src/Controllers/SpecialtyController.php";
+        $controller = new SpecialtyController($conn);
+        $controller->index();
+        break;
+    case 'doctors':
+        require_once __DIR__ . '/../src/Controllers/DoctorController.php';
+        $controller = new DoctorController($conn);
+        $controller->index();
+        break;
+    case 'book_appointment':
+        require_once "../src/Controllers/AppointmentController.php";
+        $controller = new AppointmentController($conn);
+        $controller->store();
+        break;
+    case 'doctor':
+        require_once "../src/Controllers/DoctorController.php";
+        $controller = new DoctorController($conn);
 
-// وغيرها لباقي CRUD ...
+        // Check if there's an ID passed
+        if (isset($_GET['id'])) {
+            $controller->show($_GET['id']);
+        } else {
+            echo "❌ No doctor ID provided.";
+        }
+        break;
+    case 'majors':
+        require_once __DIR__ . '/../src/Controllers/SpecialtyController.php';
+        $controller = new SpecialtyController($conn);
+        $controller->majors();
+        break;
+    case 'login':
+        require_once "../src/Controllers/AuthController.php";
+        $controller = new AuthController($conn);
+        $controller->login();
+        break;
 
-$router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+    case 'register':
+        require_once "../src/Controllers/AuthController.php";
+        $controller = new AuthController($conn);
+        $controller->register();
+        break;
+
+    default:
+        echo "<div class='container py-5'><h2>404 - Page Not Found</h2></div>";
+        break;
+}
+
+// الفوتر
+require_once "../src/Views/partials/footer.php";

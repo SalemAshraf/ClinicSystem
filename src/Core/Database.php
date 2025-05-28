@@ -1,36 +1,22 @@
 <?php
 namespace Core;
-
 use PDO;
-use PDOException;
 
-class Database {
-    private static ?Database $instance = null;
-    private PDO $pdo;
+class Database
+{
+    private static ?PDO $instance = null;
 
-    private function __construct() {
-        $dsn = DB_DRIVER
-             . ":host="   . DB_HOST
-             . ";dbname=" . DB_NAME
-             . ";charset=" . DB_CHARSET;
-        try {
-            $this->pdo = new PDO($dsn, DB_USER, DB_PASS, [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-        } catch (PDOException $e) {
-            exit("Database connection failed: " . $e->getMessage());
-        }
-    }
+    private function __construct() {}
 
-    public static function getInstance(): Database {
+    public static function getInstance(): PDO
+    {
         if (self::$instance === null) {
-            self::$instance = new Database();
+            $cfg = require __DIR__ . '/../../config/db.php';
+            $dsn = "mysql:host={$cfg['host']};dbname={$cfg['db']};charset=utf8mb4";
+            self::$instance = new PDO($dsn, $cfg['user'], $cfg['pass'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
         }
         return self::$instance;
-    }
-
-    public function pdo(): PDO {
-        return $this->pdo;
     }
 }

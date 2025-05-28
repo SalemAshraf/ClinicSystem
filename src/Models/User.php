@@ -1,21 +1,35 @@
 <?php
-namespace Models;
-use Core\Model;
-use PDO;
 
-class User extends Model {
-    protected $table = 'users';
+class User
+{
+    private $conn;
 
-    public function findAll(): array {
-        $stmt = $this->db->query("SELECT * FROM {$this->table}");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function __construct($db)
+    {
+        $this->conn = $db;
     }
 
-    public function findById(int $id): ?array {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+public function register($name, $email, $password)
+{
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $this->conn->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $name, $email, $hashedPassword);
+    return $stmt->execute();
+}
+
+public function login($email, $password)
+{
+    $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+
+    if ($user && password_verify($password, $user['password_hash'])) {
+        return $user;
     }
 
-    // create(), update(), delete() بنفس الأسلوب
+    return false;
+}
+
 }

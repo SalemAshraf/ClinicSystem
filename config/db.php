@@ -1,8 +1,13 @@
 <?php
 
-define('DB_DRIVER',  'mysql');
-define('DB_HOST',    'localhost');
-define('DB_NAME',    'reviv_clinic');
-define('DB_USER',    'root');
-define('DB_PASS',    '');
-define('DB_CHARSET', 'utf8mb4');
+$host = 'localhost';
+$username = 'root';
+$password = 'root';
+$database = 'clinic_system';
+
+$conn = new mysqli($host, $username, $password, $database);
+
+// check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
