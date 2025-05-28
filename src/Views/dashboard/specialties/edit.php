@@ -1,0 +1,55 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid my-2">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Specialties</h1>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <a href="index.php?page=admin_specialties_create" class="btn btn-primary">New Specialty</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-tools">
+                        <form method="GET" action="">
+                            <div class="input-group" style="width: 250px;">
+                                <input type="text" name="search" class="form-control float-right" placeholder="Search">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="index.php?page=admin_specialties_update">
+                        <input type="hidden" name="id" value="<?= $specialty['id'] ?>">
+
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($specialty['name']) ?>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea name="description" class="form-control"><?= htmlspecialchars($specialty['description']) ?></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-2">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -43,6 +43,7 @@
                             href="index.php?page=doctors">Doctors</a>
                         <?php if (isset($_SESSION['user'])): ?>
                             <a type="button" class="btn btn-outline-light navigation--button" href="logout.php">Logout</a>
+                            <a type="button" class="btn btn-outline-light navigation--button" href="index.php?page=admin_dashboard">Dashboard</a>
                         <?php else: ?>
                             <a type="button" class="btn btn-outline-light navigation--button" href="index.php?page=login">login</a>
                         <?php endif; ?>
